@@ -23,6 +23,7 @@ export class PrometheusDatasource {
   interval: string;
   httpMethod: string;
   resultTransformer: ResultTransformer;
+  token: any;
 
   /** @ngInject */
   constructor(instanceSettings, private $q, private backendSrv, private templateSrv, private timeSrv) {
@@ -37,6 +38,7 @@ export class PrometheusDatasource {
     this.interval = instanceSettings.jsonData.timeInterval || '15s';
     this.httpMethod = instanceSettings.jsonData.httpMethod || 'GET';
     this.resultTransformer = new ResultTransformer(templateSrv);
+    this.token = instanceSettings.jsonData.token;
   }
 
   _request(method, url, data?, requestId?) {
@@ -71,6 +73,12 @@ export class PrometheusDatasource {
     if (this.basicAuth) {
       options.headers = {
         Authorization: this.basicAuth,
+      };
+    }
+
+    if (this.token) {
+      options.headers = {
+        "Authorization": 'Bearer ' + this.token
       };
     }
 
